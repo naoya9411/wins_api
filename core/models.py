@@ -41,3 +41,54 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.email
+
+
+class UserProfile(models.Model):
+
+    email = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        related_name='userprofile_email',
+        on_delete=models.CASCADE
+    )
+    family_name = models.CharField(max_length=20)
+    first_name = models.CharField(max_length=20)
+    nickname = models.CharField(max_length=20, null=True)
+    birth_date = models.DateField(null=True)
+    address_prefecture = models.CharField(max_length=10)
+    address_city = models.CharField(max_length=20)
+    hear_from = models.CharField(max_length=30)
+    introduced = models.CharField(max_length=40, null=True)
+    phone_number = models.CharField(max_length=11)
+
+    def __str__(self):
+        return self.family_name + self.first_name
+
+
+class UserInfo(models.Model):
+
+    email = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        related_name='userinfo_email',
+        on_delete=models.CASCADE
+    )
+    point = models.IntegerField(default=0)
+    visit_count = models.IntegerField(default=0)
+    continuous_visit_count = models.IntegerField(default=0)
+    previous_visit = models.DateTimeField(null=True)
+    last_visit = models.DateTimeField(null=True)
+
+    def __str__(self):
+        return str(self.email)
+
+
+class VisitHistory(models.Model):
+
+    email = models.OneToOneField(
+        settings.AUTH_USER_MODEL,
+        related_name='visit_history_email',
+        on_delete=models.CASCADE
+    )
+    visited_date = models.DateTimeField(primary_key=True)
+
+    def __str__(self):
+        return str(self.email + self.visited_date)
